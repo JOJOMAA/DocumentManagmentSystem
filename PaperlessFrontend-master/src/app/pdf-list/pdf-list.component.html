@@ -1,0 +1,14 @@
+<div class="pdf-list-wrapper">
+  <h2>PDF downloaden</h2>
+
+  <div class="pdf-list">
+    <ul>
+      <span *ngFor="let document of documentList" class="download-span">
+      <p class="list-item">
+        {{ document.name }}
+        <button mat-button class="download-button" color="primary" (click)="downloadPdf(document.id)">Download</button>
+      </p>
+      </span>
+    </ul>
+  </div>
+</div>

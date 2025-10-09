@@ -1,0 +1,21 @@
+<input type="file" class="file-input" accept="application/pdf" (change)="selectPdf($event)" #fileUpload>
+<div class="upload-pdf-wrapper">
+  <h2 class="upload-title">PDF hochladen</h2>
+  <div class="select-pdf-wrapper">
+    <div class="select-pdf">
+      {{fileName || "No file uploaded yet."}}
+
+      <button mat-mini-fab color="primary" class="select-button"
+        (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <button mat-button class="upload-button" (click)="uploadPdf(file)">
+    PDF Hochladen!
+  </button>
+
+</div>
+
+

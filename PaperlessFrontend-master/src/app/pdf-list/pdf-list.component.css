@@ -1,0 +1,20 @@
+.pdf-list-wrapper {
+  background: grey;
+  border-radius: 12px;
+  padding: 0.5rem 0.5rem;
+  display:  inline-grid;
+}
+
+.list-item {
+  margin-left: -2.5rem;
+  background: white;
+  padding: 0.5rem 0.5rem;
+  border-radius: 12px;
+}
+
+.download-button {
+}
+
+.download-span{
+  display: flex;
+}

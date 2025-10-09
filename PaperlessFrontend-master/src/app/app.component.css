@@ -1,0 +1,8 @@
+.title {
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  gap: 1rem;
+}
