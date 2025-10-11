@@ -58,4 +58,16 @@ export class PdfListComponent implements OnInit {
     });
   }
 
+  deleteDocument(id: number): void {
+    this.http.delete(`http://localhost:8081/documents/${id}`)
+      .subscribe({
+        next: () => {
+          this.documentList = this.documentList.filter(doc => doc.id !== id);
+        },
+        error: (err) => {
+          console.error('Fehler beim Löschen', err);
+        }
+      });
+  }
+
 }

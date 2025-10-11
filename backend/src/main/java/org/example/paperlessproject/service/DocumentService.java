@@ -29,4 +29,8 @@ public class DocumentService {
     public List<DocumentEntity> getAllDocuments() {
         return documentRepository.findAll();
     }
+
+    public void deleteDocument(Long id) {
+        documentRepository.deleteById(id);
+    }
 }

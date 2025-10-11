@@ -53,4 +53,11 @@ public class DocumentController {
                 .header("Content-Disposition", "attachment; filename=\"" + doc.getName() + ".pdf\"")
                 .body(doc.getContent());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+        documentService.deleteDocument(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

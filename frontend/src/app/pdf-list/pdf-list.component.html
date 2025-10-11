@@ -7,6 +7,7 @@
       <p class="list-item">
         {{ document.name }}
         <button mat-button class="download-button" color="primary" (click)="downloadPdf(document.id)">Download</button>
+        <button mat-button color="warn" (click)="deleteDocument(document.id)">Delete</button>
       </p>
       </span>
     </ul>
