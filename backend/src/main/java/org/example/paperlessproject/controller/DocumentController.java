@@ -51,6 +51,7 @@ public class DocumentController {
         DocumentEntity doc = documentService.getById(id);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"" + doc.getName() + ".pdf\"")
+                .header("Content-Type", "application/pdf")
                 .body(doc.getContent());
     }
 
