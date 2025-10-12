@@ -19,12 +19,14 @@ services:
 
   backend:
     build:
-      context: backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: paperless-api
     restart: unless-stopped
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/paperlessDb
@@ -33,17 +35,52 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_MAIN_BANNER_MODE: console
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_RABBIT_HOST: rabbitmq
+      SPRING_RABBIT_USER: user
+      SPRING_RABBIT_PASS: 1234
+      SPRING_RABBITMQ_PORT: 5672
+      OCR_QUEUE: OCR_QUEUE
+      RESULT_QUEUE: RESULT_QUEUE
     ports:
       - "8081:8080"
 
   frontend:
     build:
-      context: frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: paperless-frontend
     restart: unless-stopped
     ports:
       - "4200:4200"
+
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: paperless-rabbitmq
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # mgmt UI
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: 1234
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  ocr-worker:
+    build:
+      context: ./backend/workers/ocr
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: user
+      RABBIT_PASS: 1234
+      OCR_QUEUE: OCR_QUEUE
+      RESULT_QUEUE: RESULT_QUEUE
 
 volumes:
   postgres_data:
