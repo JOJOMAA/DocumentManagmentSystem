@@ -8,12 +8,14 @@ import org.example.paperlessproject.service.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.print.Doc;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
 
 @CrossOrigin
 @RequiredArgsConstructor
+@Log4j2
 @RestController
 @RequestMapping("/documents")
 public class DocumentController {
@@ -26,6 +28,7 @@ public class DocumentController {
             @RequestParam("name") String name,
             @RequestParam("file") MultipartFile file) throws Exception {
         DocumentEntity saved = documentService.savePdf(name, file);
+        log.info("uploading pdf: {}", name);
         return ResponseEntity.ok(mapper.toDto(saved));
     }
 
@@ -49,6 +52,7 @@ public class DocumentController {
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
         DocumentEntity doc = documentService.getById(id);
+        log.info("downloading pdf-file: {}", id);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"" + doc.getName() + ".pdf\"")
                 .header("Content-Type", "application/pdf")
@@ -58,6 +62,7 @@ public class DocumentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         documentService.deleteDocument(id);
+        log.info("deleting pdf: {}", id);
         return ResponseEntity.noContent().build();
     }
 

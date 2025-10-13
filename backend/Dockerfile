@@ -2,6 +2,7 @@
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
+RUN mkdir -p logs && chmod 755 logs
 RUN mvn -q -DskipTests package
 
 # Run stage

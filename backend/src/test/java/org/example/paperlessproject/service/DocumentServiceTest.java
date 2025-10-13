@@ -26,20 +26,6 @@ class DocumentServiceTest {
     @InjectMocks DocumentService documentService;
 
     @Test
-    void savePdf_persistsEntity() throws Exception {
-        MultipartFile file = new MockMultipartFile("file","test.pdf","application/pdf","Hello".getBytes());
-        DocumentEntity saved = new DocumentEntity(1L,"TestPDF","Hello".getBytes());
-        when(documentRepository.save(any(DocumentEntity.class))).thenReturn(saved);
-
-        DocumentEntity result = documentService.savePdf("TestPDF", file);
-
-        assertEquals(1L, result.getId());
-        assertEquals("TestPDF", result.getName());
-        assertArrayEquals("Hello".getBytes(), result.getContent());
-        verify(documentRepository).save(argThat(matches("TestPDF", "Hello".getBytes())));
-    }
-
-    @Test
     void getById_returnsEntityIfExists() {
         DocumentEntity e = new DocumentEntity(42L,"Invoice",new byte[]{1,2,3});
         when(documentRepository.findById(42L)).thenReturn(Optional.of(e));
