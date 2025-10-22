@@ -11,13 +11,19 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Bean
-    Queue ocrQueue(@Value("${paperless.queues.ocr}") String name) { return new Queue(name, true); }
+    Queue ocrQueue(@Value("${paperless.queues.ocr}") String name) {
+        return new Queue(name, true);
+    }
 
     @Bean
-    Queue resultQueue(@Value("${paperless.queues.result}") String name) { return new Queue(name, true); }
+    Queue resultQueue(@Value("${paperless.queues.result}") String name) {
+        return new Queue(name, true);
+    }
 
     @Bean
-    Jackson2JsonMessageConverter jackson() { return new Jackson2JsonMessageConverter(); }
+    Jackson2JsonMessageConverter jackson() {
+        return new Jackson2JsonMessageConverter();
+    }
 
     @Bean
     RabbitTemplate rabbitTemplate(org.springframework.amqp.rabbit.connection.ConnectionFactory cf) {

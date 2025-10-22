@@ -1,4 +1,3 @@
-// backend/src/main/java/org/example/paperlessproject/service/DocumentService.java
 package org.example.paperlessproject.service;
 
 import org.example.paperlessproject.model.DocumentEntity;
@@ -25,37 +24,20 @@ public class DocumentService {
     private MinioService minioService;
 
     public DocumentEntity savePdf(String name, MultipartFile file) throws Exception {
-        log.info("Attempting to save document: {}", name);
-
         String minioKey = minioService.uploadFile(name, file);
-
         DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setName(name);
         documentEntity.setMinioKey(minioKey);
-
         DocumentEntity saved = documentRepository.save(documentEntity);
-        log.info("Document saved successfully with ID: {}", saved.getId());
-
-        DocumentUploadedEvent event = new DocumentUploadedEvent(
-                saved.getId(),
-                saved.getName(),
-                "pdfs",
-                minioKey,
-                Instant.now()
-        );
-        ocrPublisher.publish(event);
-        log.info("OCR event published for document ID: {}", saved.getId());
+        ocrPublisher.publish(new DocumentUploadedEvent(
+                saved.getId(), saved.getName(), "pdfs", minioKey, Instant.now()
+        ));
         return saved;
     }
 
     public DocumentEntity getById(Long id) {
-        log.debug("Fetching document with ID: {}", id);
-
         return documentRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Document not found with ID: {}", id);
-                    return new RuntimeException("Dokument nicht gefunden");
-                });
+                .orElseThrow(() -> new RuntimeException("Document not found"));
     }
 
     public byte[] getPdfContent(Long id) throws Exception {
@@ -64,16 +46,16 @@ public class DocumentService {
     }
 
     public List<DocumentEntity> getAllDocuments() {
-        log.debug("Fetching all documents");
         return documentRepository.findAll();
     }
 
     public void deleteDocument(Long id) throws Exception {
-        log.info("Attempting to delete document with ID: {}", id);
-
         DocumentEntity doc = getById(id);
         minioService.deleteFile(doc.getMinioKey());
         documentRepository.deleteById(id);
-        log.info("Document deleted successfully: ID={}", id);
+    }
+
+    public List<DocumentEntity> searchByOcrText(String q) {
+        return documentRepository.findByOcrTextContainingIgnoreCase(q);
     }
 }

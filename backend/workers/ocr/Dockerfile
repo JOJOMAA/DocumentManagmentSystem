@@ -1,7 +1,16 @@
-FROM python:3.11-alpine
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        tesseract-ocr tesseract-ocr-eng tesseract-ocr-deu \
+        ghostscript poppler-utils libjpeg62-turbo zlib1g && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY worker.py .
-CMD ["python", "worker.py"]
+RUN pip install -r requirements.txt
+COPY *.py ./
+COPY tests ./tests
+CMD ["python", "main.py"]

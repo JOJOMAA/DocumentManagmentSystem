@@ -1,6 +1,5 @@
 package org.example.paperlessproject.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,9 +8,8 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
 public class DocumentEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -22,4 +20,15 @@ public class DocumentEntity {
 
     @Column(nullable = false)
     private String minioKey;
+
+    // Use PostgreSQL text type (removing @Lob avoids CLOB mapping issues with UPPER)
+    @Column(name = "ocr_text", columnDefinition = "text")
+    private String ocrText;
+
+    public DocumentEntity(Long id, String name, String minioKey) {
+        this.id = id;
+        this.name = name;
+        this.minioKey = minioKey;
+        this.ocrText = null;
+    }
 }

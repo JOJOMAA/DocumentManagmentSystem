@@ -10,7 +10,11 @@ public class OcrPublisher {
     private final String ocrQueue;
 
     public OcrPublisher(RabbitTemplate tpl, @Value("${paperless.queues.ocr}") String ocrQueue) {
-        this.tpl = tpl; this.ocrQueue = ocrQueue;
+        this.tpl = tpl;
+        this.ocrQueue = ocrQueue;
     }
-    public void publish(Object payload) { tpl.convertAndSend(ocrQueue, payload); }
+
+    public void publish(Object payload) {
+        tpl.convertAndSend(ocrQueue, payload);
+    }
 }
