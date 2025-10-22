@@ -20,7 +20,6 @@ public class DocumentEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob //can handle large documents
-    @Column(name = "content", nullable = false)
-    private byte[] content;
+    @Column(nullable = false)
+    private String minioKey;
 }

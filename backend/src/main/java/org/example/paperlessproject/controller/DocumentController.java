@@ -50,17 +50,19 @@ public class DocumentController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) throws Exception {
         DocumentEntity doc = documentService.getById(id);
         log.info("downloading pdf-file: {}", id);
+        byte[] content = documentService.getPdfContent(id);
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"" + doc.getName() + ".pdf\"")
                 .header("Content-Type", "application/pdf")
-                .body(doc.getContent());
+                .body(content);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) throws Exception {
         documentService.deleteDocument(id);
         log.info("deleting pdf: {}", id);
         return ResponseEntity.noContent().build();

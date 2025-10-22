@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class DocumentDto {
     private Long id;
     private String name;
-    private byte[] content;
+    private String minioKey;
     }
