@@ -48,12 +48,19 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_MAIN_BANNER_MODE: console
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_RABBIT_HOST: rabbitmq
-      SPRING_RABBIT_USER: user
-      SPRING_RABBIT_PASS: 1234
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: 1234
       SPRING_RABBITMQ_PORT: 5672
       OCR_QUEUE: OCR_QUEUE
       RESULT_QUEUE: RESULT_QUEUE
+      APP_MESSAGING_OCR_EXCHANGE: ""        # default exchange
+      APP_MESSAGING_OCR_ROUTING_KEY: OCR_QUEUE
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_BUCKET: pdfs
+
     ports:
       - "8081:8080"
 
@@ -100,6 +107,34 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin123
       MINIO_BUCKET: pdfs
+
+  genai-worker:
+    build:
+      context: ./backend/workers/genai   # ensure this path exists
+    command: python -u genai_worker.py
+    environment:
+      # RabbitMQ (use the service key as hostname)
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: user
+      RABBIT_PASS: 1234
+      RESULT_QUEUE: RESULT_QUEUE
+      ERROR_QUEUE: ERROR_QUEUE
+
+      # Backend inside the compose network: service key + internal port
+      REST_BASE_URL: http://backend:8080
+
+      # Gemini
+      GENAI_API_KEY: ${GENAI_API_KEY}
+      GENAI_MODEL: gemini-1.5-flash-latest
+      GENAI_URL: https://generativelanguage.googleapis.com/v1beta
+      GENAI_TIMEOUT: 20
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  
 
 
 volumes:

@@ -58,4 +58,9 @@ public class DocumentService {
     public List<DocumentEntity> searchByOcrText(String q) {
         return documentRepository.findByOcrTextContainingIgnoreCase(q);
     }
+
+    public DocumentEntity save(DocumentEntity doc) {
+    return documentRepository.save(doc);
+    }
+
 }

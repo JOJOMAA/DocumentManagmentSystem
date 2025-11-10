@@ -2,6 +2,7 @@ package org.example.paperlessproject.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.paperlessproject.dto.DocumentDto;
+import org.example.paperlessproject.dto.SummaryRequest;
 import org.example.paperlessproject.mapper.DocumentMapper;
 import org.example.paperlessproject.model.DocumentEntity;
 import org.example.paperlessproject.service.DocumentService;
@@ -28,6 +29,17 @@ public class DocumentController {
         DocumentEntity saved = documentService.savePdf(name, file);
         return ResponseEntity.ok(mapper.toDto(saved));
     }
+
+    @PostMapping("/{id}/summary")
+    public ResponseEntity<Void> saveSummary(@PathVariable Long id,
+                                            @RequestBody SummaryRequest req) {
+        DocumentEntity doc = documentService.getById(id);
+        doc.setSummary(req.getSummary());
+        documentService.save(doc);
+        log.info("Saved GenAI summary for document id={}", id);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<DocumentDto> getMeta(@PathVariable Long id) {

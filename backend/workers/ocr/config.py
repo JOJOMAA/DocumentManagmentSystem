@@ -11,3 +11,4 @@ MINIO_SECRET = os.getenv("MINIO_SECRET_KEY", "minioadmin123")
 
 TESS_LANG = os.getenv("TESS_LANG", "deu+eng")
 TESS_DPI  = int(os.getenv("TESS_DPI", "300"))
+

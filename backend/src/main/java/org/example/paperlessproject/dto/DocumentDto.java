@@ -12,6 +12,7 @@ public class DocumentDto {
     private String name;
     private String minioKey;
     private String ocrText;
+      private String summary;
 
     //constructor for old tests without OCR text
     public DocumentDto(Long id, String name, String minioKey) {
@@ -19,5 +20,6 @@ public class DocumentDto {
         this.name = name;
         this.minioKey = minioKey;
         this.ocrText = null;
+        this.summary = null;
     }
     }

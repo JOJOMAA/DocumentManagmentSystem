@@ -25,6 +25,10 @@ public class DocumentEntity {
     @Column(name = "ocr_text", columnDefinition = "text")
     private String ocrText;
 
+    @Column(name = "summary", columnDefinition = "text")
+    private String summary;
+
+
     public DocumentEntity(Long id, String name, String minioKey) {
         this.id = id;
         this.name = name;
