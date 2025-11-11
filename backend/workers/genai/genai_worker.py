@@ -1,6 +1,6 @@
 import logging, time, requests
 from typing import Dict
-from rabbit import Rabbit  # <-- use the local rabbit.py in workers/genai/
+from rabbit import Rabbit 
 from config import (
     RABBIT_HOST, RABBIT_USER, RABBIT_PASS,
     RESULT_QUEUE, ERROR_QUEUE, REST_BASE_URL
@@ -48,7 +48,6 @@ def handle_event(evt: Dict) -> None:
 
     log.info("Summarizing id=%s (chars=%d)", doc_id, len(text))
 
-    # Exponential backoff retries for GenAI + REST
     for attempt in range(1, 4):
         try:
             summary = summarize_text(text)

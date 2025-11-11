@@ -33,7 +33,6 @@ def summarize_text(text: str, max_output_tokens: int = 512) -> str:
         raise RuntimeError(f"GenAI request failed: {e}") from e
 
     if resp.status_code >= 400:
-        # Try to surface helpful details from Google response
         try:
             err = resp.json()
         except Exception:
@@ -41,7 +40,6 @@ def summarize_text(text: str, max_output_tokens: int = 512) -> str:
         raise RuntimeError(f"GenAI HTTP {resp.status_code}: {err}")
 
     data = resp.json()
-    # Extract text from candidates
     try:
         parts = data["candidates"][0]["content"]["parts"]
         summary = "".join(p.get("text","") for p in parts).strip()
