@@ -7,7 +7,7 @@ from config import (
 )
 from genai_client import summarize_text
 
-logging.basicConfig(
+logging.basicConfig(    #Log Ansicht
     level=logging.INFO,
     format="%(asctime)s %(levelname)s [%(name)s] %(message)s"
 )
@@ -18,12 +18,12 @@ rabbit = Rabbit(RABBIT_HOST, RABBIT_USER, RABBIT_PASS)
 def _post_summary(doc_id: str, summary: str) -> None:
     url = f"{REST_BASE_URL}/documents/{doc_id}/summary"
     try:
-        resp = requests.post(url, json={"summary": summary}, timeout=10)
-        resp.raise_for_status()
+        resp = requests.post(url, json={"summary": summary}, timeout=10)    #POST ANfrage an REST API
+        resp.raise_for_status() # Raise error for HTTP errors
     except requests.RequestException as e:
         raise RuntimeError(f"REST request failed: {e}") from e
 
-def _report_error(stage: str, evt: Dict, err: str) -> None:
+def _report_error(stage: str, evt: Dict, err: str) -> None: #Fehlermeldung an RabbitMQ senden (wo, Ereignis, Meldung)
     try:
         rabbit.publish(ERROR_QUEUE, {
             "stage": stage,
@@ -33,12 +33,7 @@ def _report_error(stage: str, evt: Dict, err: str) -> None:
     except Exception:
         log.exception("Failed to publish error to %s", ERROR_QUEUE)
 
-def handle_event(evt: Dict) -> None:
-    """
-    Consumes OCR results from RESULT_QUEUE:
-      { "id": <doc_id>, "text": <extracted_text> }
-    Summarizes via Gemini and POSTs to REST to persist.
-    """
+def handle_event(evt: Dict) -> None:    #OCR Ergebnis verarbeiten
     doc_id = evt.get("id")
     text   = evt.get("text")
 
@@ -48,7 +43,7 @@ def handle_event(evt: Dict) -> None:
 
     log.info("Summarizing id=%s (chars=%d)", doc_id, len(text))
 
-    for attempt in range(1, 4):
+    for attempt in range(1, 4): #3 Versuche
         try:
             summary = summarize_text(text)
             _post_summary(doc_id, summary)
@@ -65,7 +60,7 @@ def handle_event(evt: Dict) -> None:
 
 def main() -> None:
     log.info("Started. Waiting on %s", RESULT_QUEUE)
-    rabbit.consume(RESULT_QUEUE, handle_event)
+    rabbit.consume(RESULT_QUEUE, handle_event) #Ereignisse aus RESULT_QUEUE verarbeiten
 
-if __name__ == "__main__":
+if __name__ == "__main__":  #startet automatisch, wenn Skript direkt ausgeführt wird
     main()
