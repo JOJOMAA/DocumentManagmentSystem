@@ -20,7 +20,10 @@ def handle_event(evt: dict):
     if not (doc_id and bucket and key):
         log.warning("Invalid event skipped: %s", evt)
         return
+
     log.info("Processing id=%s key=%s bucket=%s", doc_id, key, bucket)
+    log.info("Fetching from MinIO: bucket=%s key=%s", bucket, key)
+
     pdf_bytes = minio.get_pdf_bytes(bucket, key)
     text = ocr_pdf(pdf_bytes, dpi=TESS_DPI, lang=TESS_LANG)
     rabbit.publish(RESULT_QUEUE, {"id": doc_id, "text": text})
