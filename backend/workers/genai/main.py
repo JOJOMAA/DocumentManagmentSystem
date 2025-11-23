@@ -17,7 +17,7 @@ rabbit = Rabbit(RABBIT_HOST, RABBIT_USER, RABBIT_PASS)
 
 
 def handle_event(evt: dict):
-    doc_id = evt.get("id")
+    doc_id = evt.get("documentId")
     text = evt.get("text")
 
     if not doc_id or not text:
