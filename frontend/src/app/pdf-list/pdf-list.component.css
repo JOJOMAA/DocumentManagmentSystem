@@ -1,20 +1,70 @@
-.pdf-list-wrapper {
-  background: grey;
-  border-radius: 12px;
-  padding: 0.5rem 0.5rem;
-  display:  inline-grid;
+:host {
+  display: block;
+  height: 100%;
 }
 
-.list-item {
-  margin-left: -2.5rem;
-  background: white;
-  padding: 0.5rem 0.5rem;
-  border-radius: 12px;
+.list-card {
+  min-height: 300px;
 }
 
-.download-button {
+h2 {
+  margin-bottom: 24px;
+  font-size: 1.5rem;
 }
 
-.download-span{
+.pdf-list {
   display: flex;
+  flex-direction: column;
+}
+
+.pdf-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 0;
+}
+
+.pdf-item:last-child {
+  border-bottom: none;
+}
+
+.pdf-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pdf-icon {
+  color: var(--text-secondary);
+}
+
+.pdf-name {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.pdf-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.empty-state {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Responsive Anpassung für kleine Screens: Aktionen untereinander */
+@media (max-width: 600px) {
+  .pdf-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .pdf-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

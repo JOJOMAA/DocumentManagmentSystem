@@ -1,34 +1,64 @@
-.file-input {
-  display: none;
-}
-.select-pdf-wrapper{
-  display: flex;
-  gap: 1rem;
+:host {
+  display: block;
 }
 
-.select-pdf {
-  display: inline-block;
-  background: white;
-  padding: 0.5rem 0.5rem;
-  border-radius: 12px;
-  display: flex;
+.upload-title {
+  margin-bottom: 24px;
+  font-size: 1.5rem;
 }
 
-.upload-pdf-wrapper {
-  background: grey;
-  display:  inline-grid;
-  border-radius: 12px;
-  padding: 0.5rem 0.5rem;
-  margin-left: 1rem;
+.file-selection-zone {
+  border: 2px dashed var(--dashed-border);
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--bg-color);
+  margin-bottom: 32px;
+  color: var(--text-main);
+}
+
+.file-selection-zone:hover {
+  border-color: var(--text-secondary);
+  background-color: var(--hover-bg);
+}
+
+.icon-wrapper mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.selection-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.click-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.sub-text, .change-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.selected-file-name {
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .upload-button {
-  background: white;
-  border-radius: 12px;
-  padding: 0.5rem 0.5rem;
-  margin-top: 1rem;
-}
-
-.upload-title{
-  text-align: center;
+  padding: 8px 24px;
 }
