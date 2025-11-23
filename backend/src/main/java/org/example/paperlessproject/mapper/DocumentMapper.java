@@ -6,5 +6,8 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface DocumentMapper {
+
     DocumentDto toDto(DocumentEntity entity);
+
+    DocumentEntity toEntity(DocumentDto dto);
 }

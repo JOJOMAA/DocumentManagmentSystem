@@ -1,13 +1,13 @@
 package org.example.paperlessproject.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "document")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class DocumentEntity {
 
     @Id
@@ -21,14 +21,20 @@ public class DocumentEntity {
     @Column(nullable = false)
     private String minioKey;
 
-    // Use PostgreSQL text type (removing @Lob avoids CLOB mapping issues with UPPER)
+    // Full OCR text (PostgreSQL text type)
     @Column(name = "ocr_text", columnDefinition = "text")
     private String ocrText;
 
+    // GenAI summary (stored after Gemini processing)
+    @Column(length = 4000)
+    private String summary;
+
+    // Your custom constructor (keep it)
     public DocumentEntity(Long id, String name, String minioKey) {
         this.id = id;
         this.name = name;
         this.minioKey = minioKey;
         this.ocrText = null;
+        this.summary = null;
     }
 }

@@ -31,4 +31,21 @@ public class RabbitMQConfig {
         t.setMessageConverter(jackson());
         return t;
     }
+
+    @Value("${GENAI_REQUEST_QUEUE}")
+    private String genAiRequestQueue;
+
+    @Value("${GENAI_RESPONSE_QUEUE}")
+    private String genAiResponseQueue;
+
+    @Bean
+    public Queue genAiRequestQueue() {
+        return new Queue(genAiRequestQueue, true);
+    }
+
+    @Bean
+    public Queue genAiResponseQueue() {
+        return new Queue(genAiResponseQueue, true);
+    }
+
 }

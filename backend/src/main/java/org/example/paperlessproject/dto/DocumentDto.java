@@ -8,16 +8,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class DocumentDto {
+
     private Long id;
     private String name;
     private String minioKey;
     private String ocrText;
+    private String summary;
 
-    //constructor for old tests without OCR text
+    // Constructor for old tests without OCR text / summary
     public DocumentDto(Long id, String name, String minioKey) {
         this.id = id;
         this.name = name;
         this.minioKey = minioKey;
         this.ocrText = null;
+        this.summary = null;
     }
-    }
+}
