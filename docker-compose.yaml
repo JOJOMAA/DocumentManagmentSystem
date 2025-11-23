@@ -54,6 +54,10 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       OCR_QUEUE: OCR_QUEUE
       RESULT_QUEUE: RESULT_QUEUE
+      GENAI_REQUEST_QUEUE: GENAI_REQUEST_QUEUE
+      GENAI_RESPONSE_QUEUE: GENAI_RESPONSE_QUEUE
+      GEMINI_MODEL: ${GEMINI_MODEL}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
     ports:
       - "8081:8080"
 
@@ -100,6 +104,27 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin123
       MINIO_BUCKET: pdfs
+
+  genai-worker:
+    build:
+      context: ./backend/workers/genai
+      dockerfile: Dockerfile
+    container_name: genai-worker
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: user
+      RABBIT_PASS: 1234
+      GENAI_REQUEST_QUEUE: GENAI_REQUEST_QUEUE
+      GENAI_RESPONSE_QUEUE: GENAI_RESPONSE_QUEUE
+      GEMINI_MODEL: ${GEMINI_MODEL}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      RESULT_QUEUE: GENAI_REQUEST_QUEUE
+      SUMMARY_QUEUE: GENAI_RESPONSE_QUEUE
+    command: ["python", "main.py"]
 
 
 volumes:
