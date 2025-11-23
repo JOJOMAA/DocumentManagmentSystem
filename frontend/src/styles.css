@@ -1,6 +1,57 @@
-html {
-  background-color: #b9c5f3;
+:root {
+  /* Light Mode Variablen */
+  --bg-color: #F7F6F3;
+  --text-main: #37352F;
+  --text-secondary: #767676;
+  --card-bg: #FFFFFF;
+  --card-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+  --hover-bg: #F0F0F0;
+  --accent-color: #2196F3;
+  --dashed-border: #E0E0E0;
+  --border-color: #EFEFEF;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body[data-theme="dark"] {
+  /* Dark Mode Variablen */
+  --bg-color: #191919;
+  --text-main: #D4D4D4;
+  --text-secondary: #9B9B9B;
+  --card-bg: #202020;
+  --card-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
+  --hover-bg: #2C2C2C;
+  --accent-color: #64B5F6;
+  --dashed-border: #444444;
+  --border-color: #333333;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Globale Card Klasse */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 32px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  margin-top: 0;
+  color: var(--text-main);
+}
+
+button.mat-mdc-button-base {
+  border-radius: 8px !important;
+  letter-spacing: normal !important;
+}

@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule} from "@angular/material/icon";
+import { CommonModule } from '@angular/common'; // Wichtig für NgIf etc falls standalone
 
 @Component({
   selector: 'app-pdf-upload',
   standalone: true,
-  imports: [MatButtonModule,
+  imports: [CommonModule,
+    MatButtonModule,
   MatIconModule],
   templateUrl: './pdf-upload.component.html',
   styleUrl: './pdf-upload.component.css'

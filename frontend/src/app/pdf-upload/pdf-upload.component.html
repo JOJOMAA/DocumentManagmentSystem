@@ -1,21 +1,30 @@
-<input type="file" class="file-input" accept="application/pdf" (change)="selectPdf($event)" #fileUpload>
-<div class="upload-pdf-wrapper">
+<div class="card">
   <h2 class="upload-title">PDF hochladen</h2>
-  <div class="select-pdf-wrapper">
-    <div class="select-pdf">
-      {{fileName || "No file uploaded yet."}}
 
-      <button mat-mini-fab color="primary" class="select-button"
-        (click)="fileUpload.click()">
-        <mat-icon>attach_file</mat-icon>
-      </button>
+  <input type="file" class="file-input" accept="application/pdf"
+         (change)="selectPdf($event)" #fileUpload hidden>
+
+  <div class="file-selection-zone" (click)="fileUpload.click()">
+    <div class="icon-wrapper">
+      <mat-icon>cloud_upload</mat-icon>
+    </div>
+
+    <div class="selection-text">
+      <ng-container *ngIf="!fileName; else fileSelected">
+        <span class="click-text">Klicken zum Auswählen</span>
+        <span class="sub-text">PDF Dateien werden unterstützt</span>
+      </ng-container>
+      <ng-template #fileSelected>
+        <span class="selected-file-name">{{ fileName }}</span>
+        <span class="change-text">Klicken zum Ändern</span>
+      </ng-template>
     </div>
   </div>
 
-  <button mat-button class="upload-button" (click)="uploadPdf(file)">
-    PDF Hochladen!
-  </button>
-
+  <div class="actions">
+    <button mat-flat-button color="primary" class="upload-button"
+            (click)="uploadPdf(file)" [disabled]="!fileName">
+      PDF Hochladen
+    </button>
+  </div>
 </div>
-
-

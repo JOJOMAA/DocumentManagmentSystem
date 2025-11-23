@@ -1,7 +1,19 @@
-<div class="title">
-  <h1>Paperless Project!</h1>
-</div>
-<div class="divider">
-  <app-pdf-upload ></app-pdf-upload>
-  <app-pdf-list></app-pdf-list>
+<div class="app-container">
+  <header class="app-header">
+    <h1>Paperless Project</h1>
+
+    <button mat-icon-button (click)="toggleTheme()" class="theme-toggle">
+      <mat-icon>{{ isDarkMode ? 'lightbulb' : 'dark_mode' }}</mat-icon>
+    </button>
+  </header>
+
+  <main class="content-grid">
+    <section class="upload-section">
+      <app-pdf-upload></app-pdf-upload>
+    </section>
+
+    <section class="list-section">
+      <app-pdf-list></app-pdf-list>
+    </section>
+  </main>
 </div>
