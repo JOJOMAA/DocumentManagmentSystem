@@ -4,11 +4,13 @@ import {Document} from "../model/document";
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule} from "@angular/material/icon";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-pdf-list',
   standalone: true,
-  imports: [CommonModule,
+  imports: [FormsModule,
+    CommonModule,
     MatButtonModule,
     MatIconModule],
   templateUrl: './pdf-list.component.html',
@@ -19,12 +21,27 @@ export class PdfListComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   documentList: Document[] = [];
-
+  searchQuery: string = "";
 
   ngOnInit(): void {
     this.getDocumentList();
   }
 
+  searchDocuments() {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      this.getDocumentList(); // Wenn leer, lade alle
+    } else {
+      this.http.get<Document[]>(`http://localhost:8081/documents/search?q=${this.searchQuery}`)
+        .subscribe({
+          next: (data) => {
+            this.documentList = data;
+          },
+          error: (err) => {
+            console.error('Fehler bei der Suche', err);
+          }
+        });
+    }
+  }
 
   getDocumentList() {
     this.http.get<Document[]>("http://localhost:8081/documents/list")

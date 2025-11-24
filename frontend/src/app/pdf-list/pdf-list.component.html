@@ -1,6 +1,23 @@
 <div class="card list-card">
   <h2>PDFs downloaden</h2>
 
+  <div class="search-container" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="searchDocuments()"
+      placeholder="Dokumente durchsuchen..."
+      style="padding: 10px; flex: 1; border: 1px solid #ccc; border-radius: 4px;"
+    >
+    <button mat-raised-button color="primary" (click)="searchDocuments()">
+      <mat-icon>search</mat-icon> Suchen
+    </button>
+
+    <button *ngIf="searchQuery" mat-icon-button color="warn" (click)="searchQuery=''; searchDocuments()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
   <div class="pdf-list">
     <div *ngFor="let document of documentList" class="pdf-item">
       <div class="pdf-info">
@@ -19,7 +36,7 @@
     </div>
 
     <div *ngIf="documentList.length === 0" class="empty-state">
-      <span class="sub-text">Keine Dokumente vorhanden.</span>
+      <span class="sub-text">Keine Dokumente gefunden.</span>
     </div>
   </div>
 </div>
