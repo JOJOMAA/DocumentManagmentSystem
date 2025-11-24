@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.paperlessproject.repository.DocumentRepository;
 import org.example.paperlessproject.model.DocumentEntity;
+import org.example.paperlessproject.repository.ElasticSearchRepository;
+import org.example.paperlessproject.model.elastic.ElasticSearch;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ public class OcrResultListener {
 
     private final AmqpTemplate amqpTemplate;
     private final DocumentRepository documentRepository;
+    private final ElasticSearchRepository elasticSearchRepository;
 
     @Value("${GENAI_REQUEST_QUEUE}")
     private String genAiRequestQueue;
@@ -39,6 +42,14 @@ public class OcrResultListener {
         documentRepository.findById(documentId).ifPresentOrElse(document -> {
             document.setOcrText(text);
             documentRepository.save(document);
+
+            ElasticSearch searchIndex = new ElasticSearch(
+                    document.getId(),
+                    document.getName(),
+                    text
+            );
+            elasticSearchRepository.save(searchIndex);
+            log.info("Indexed document id={} in Elasticsearch", documentId);
             log.info("Successfully saved OCR text to DB for id={}", documentId);
         }, () -> {
             log.warn("Document with id={} not found via Repository!", documentId);

@@ -2,6 +2,8 @@ package org.example.paperlessproject.service;
 
 import org.example.paperlessproject.model.DocumentEntity;
 import org.example.paperlessproject.repository.DocumentRepository;
+import org.example.paperlessproject.repository.ElasticSearchRepository;
+import org.example.paperlessproject.model.elastic.ElasticSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,8 @@ public class DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
+    @Autowired
+    private ElasticSearchRepository elasticSearchRepository;
     @Autowired
     private OcrPublisher ocrPublisher;
     @Autowired
@@ -55,7 +59,10 @@ public class DocumentService {
         documentRepository.deleteById(id);
     }
 
-    public List<DocumentEntity> searchByOcrText(String q) {
-        return documentRepository.findByOcrTextContainingIgnoreCase(q);
+    public List<DocumentEntity> searchByOcrText(String query) {
+        List<ElasticSearch> searchResults = elasticSearchRepository.findByOcrTextContaining(query);
+
+        List<Long> ids = searchResults.stream().map(ElasticSearch::getId).toList();
+        return documentRepository.findAllById(ids);
     }
 }
