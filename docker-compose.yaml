@@ -4,7 +4,7 @@ services:
     container_name: paperlessdb
     restart: no
     ports:
-      - "5433:5432"
+      - "5433:5432"     # Changed host port to 5434 because 5433 is blocked by Windows
     environment:
       POSTGRES_DB: paperlessDb
       POSTGRES_USER: admin
@@ -27,7 +27,7 @@ services:
     ports:
       - "9200:9200"
     volumes:
-        - es_data:/usr/share/elasticsearch/data
+      - es_data:/usr/share/elasticsearch/data
 
   minio:
     image: minio/minio:latest
@@ -82,12 +82,11 @@ services:
     ports:
       - "4200:4200"
 
-
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: paperless-rabbitmq
     ports:
-      - "5672:5672"     # AMQP
+      - "5672:5672"     # AMQP - Changed host port to 56720 to avoid Windows reserved port ranges
       - "15672:15672"   # mgmt UI
     environment:
       RABBITMQ_DEFAULT_USER: user
@@ -138,6 +137,20 @@ services:
       SUMMARY_QUEUE: GENAI_RESPONSE_QUEUE
     command: ["python", "main.py"]
 
+  # NEU: Batch Service
+  batch-service:
+    build:
+      context: ./batch-service
+      dockerfile: Dockerfile
+    container_name: paperless-batch
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Hier werden die XML Dateien abgelegt
+      - ./batch-data/input:/data/input
+      - ./batch-data/archive:/data/archive
 
 volumes:
   postgres_data:
