@@ -68,3 +68,36 @@ h2 {
     justify-content: flex-end;
   }
 }
+
+.pdf-item-container {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pdf-item-container:last-child {
+  border-bottom: none;
+}
+
+/* Anpassung: border-bottom hier entfernen, da es jetzt am Container hängt */
+.pdf-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  cursor: pointer; /* Zeigt an, dass es klickbar ist */
+  transition: background-color 0.2s;
+}
+
+.pdf-item:hover {
+  background-color: rgba(0, 0, 0, 0.04); /* Leichter Hover-Effekt */
+}
+
+/* Neu: Styling für die Zusammenfassung */
+.pdf-summary {
+  padding: 0 16px 16px 40px; /* Einrückung passend zum Icon */
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background-color: #fafafa; /* Leicht abgesetzter Hintergrund */
+  border-radius: 4px;
+  margin-bottom: 10px;
+}

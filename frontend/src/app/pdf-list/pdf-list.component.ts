@@ -22,11 +22,19 @@ export class PdfListComponent implements OnInit {
 
   documentList: Document[] = [];
   searchQuery: string = "";
+  currentSelectedPdf: number | null = null;
 
   ngOnInit(): void {
     this.getDocumentList();
   }
 
+  toggleSummary(doc: Document): void {
+    if (this.currentSelectedPdf === doc.id) {
+      this.currentSelectedPdf= null; // Zuklappen, wenn bereits offen
+    } else {
+      this.currentSelectedPdf = doc.id;
+    }
+  }
   searchDocuments() {
     if (!this.searchQuery || this.searchQuery.trim() === '') {
       this.getDocumentList(); // Wenn leer, lade alle

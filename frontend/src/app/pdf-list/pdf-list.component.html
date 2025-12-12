@@ -19,20 +19,29 @@
   </div>
 
   <div class="pdf-list">
-    <div *ngFor="let document of documentList" class="pdf-item">
-      <div class="pdf-info">
-        <mat-icon class="pdf-icon">description</mat-icon>
-        <span class="pdf-name">{{ document.name }}</span>
+    <div *ngFor="let document of documentList" class="pdf-item-container">
+
+      <div class="pdf-item" (click)="toggleSummary(document)">
+        <div class="pdf-info">
+          <mat-icon class="pdf-icon">description</mat-icon>
+          <span class="pdf-name">{{ document.name }}</span>
+        </div>
+
+        <div class="pdf-actions">
+          <button mat-button color="primary" (click)="downloadPdf(document.id); $event.stopPropagation()">
+            <mat-icon>download</mat-icon> Download
+          </button>
+          <button mat-button color="warn" (click)="deleteDocument(document.id); $event.stopPropagation()">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        </div>
       </div>
 
-      <div class="pdf-actions">
-        <button mat-button color="primary" (click)="downloadPdf(document.id)">
-          <mat-icon>download</mat-icon> Download
-        </button>
-        <button mat-button color="warn" (click)="deleteDocument(document.id)">
-          <mat-icon>delete</mat-icon> Delete
-        </button>
+      <div *ngIf="currentSelectedPdf === document.id" class="pdf-summary">
+        <strong>Zusammenfassung:</strong>
+        <p>{{ document.summary ? document.summary : 'Keine Zusammenfassung verfügbar.' }}</p>
       </div>
+
     </div>
 
     <div *ngIf="documentList.length === 0" class="empty-state">
