@@ -25,7 +25,6 @@ class GenAiResultListenerTest {
 
     @Test
     void onGenAiResult_updatesDocumentAndSaves_whenDocumentExists() {
-        // given
         Long docId = 5L;
         DocumentEntity doc = new DocumentEntity();
         doc.setId(docId);
@@ -36,10 +35,8 @@ class GenAiResultListenerTest {
         msg.setDocumentId(docId);
         msg.setSummary("This is a summary");
 
-        // when
         listener.onGenAiResult(msg);
 
-        // then
         verify(documentRepository).findById(docId);
 
         ArgumentCaptor<DocumentEntity> cap = ArgumentCaptor.forClass(DocumentEntity.class);
@@ -52,7 +49,6 @@ class GenAiResultListenerTest {
 
     @Test
     void onGenAiResult_doesNothing_whenDocumentMissing() {
-        // given
         Long docId = 99L;
         when(documentRepository.findById(docId)).thenReturn(Optional.empty());
 
@@ -60,25 +56,20 @@ class GenAiResultListenerTest {
         msg.setDocumentId(docId);
         msg.setSummary("summary");
 
-        // when
         listener.onGenAiResult(msg);
 
-        // then
         verify(documentRepository).findById(docId);
         verify(documentRepository, never()).save(any());
     }
 
     @Test
     void onGenAiResult_ignores_whenDocumentIdNull() {
-        // given
         GenAiResultMessage msg = new GenAiResultMessage();
         msg.setDocumentId(null);
         msg.setSummary("summary");
 
-        // when
         listener.onGenAiResult(msg);
 
-        // then
         verifyNoInteractions(documentRepository);
     }
 }

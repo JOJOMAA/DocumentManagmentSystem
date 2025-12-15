@@ -34,7 +34,6 @@ class DocumentServiceTest {
 
     @Test
     void savePdf_uploadsToMinio_savesEntity_andPublishesEvent() throws Exception {
-        // given
         MultipartFile file = new MockMultipartFile(
                 "file", "invoice.pdf", "application/pdf", "PDF".getBytes()
         );
@@ -49,10 +48,8 @@ class DocumentServiceTest {
 
         when(documentRepository.save(any(DocumentEntity.class))).thenReturn(saved);
 
-        // when
         DocumentEntity out = documentService.savePdf("Invoice", file);
 
-        // then
         assertNotNull(out);
         assertEquals(42L, out.getId());
         assertEquals("Invoice", out.getName());
@@ -78,7 +75,6 @@ class DocumentServiceTest {
 
     @Test
     void savePdf_whenMinioUploadFails_shouldNotSaveOrPublish() throws Exception {
-        // given
         MultipartFile file = new MockMultipartFile(
                 "file", "invoice.pdf", "application/pdf", "PDF".getBytes()
         );
@@ -86,7 +82,6 @@ class DocumentServiceTest {
         when(minioService.uploadFile("Invoice", file))
                 .thenThrow(new RuntimeException("MinIO down"));
 
-        // when / then
         assertThrows(RuntimeException.class, () -> documentService.savePdf("Invoice", file));
 
         verify(documentRepository, never()).save(any());
@@ -95,7 +90,6 @@ class DocumentServiceTest {
 
     @Test
     void getPdfContent_downloadsBytesFromMinio() throws Exception {
-        // given
         DocumentEntity e = new DocumentEntity();
         e.setId(1L);
         e.setName("Doc");
@@ -104,17 +98,14 @@ class DocumentServiceTest {
         when(documentRepository.findById(1L)).thenReturn(Optional.of(e));
         when(minioService.downloadFile("key-1")).thenReturn(new byte[]{1, 2, 3});
 
-        // when
         byte[] out = documentService.getPdfContent(1L);
 
-        // then
         assertArrayEquals(new byte[]{1, 2, 3}, out);
         verify(minioService).downloadFile("key-1");
     }
 
     @Test
     void deleteDocument_deletesFromMinio_thenDeletesFromRepository() throws Exception {
-        // given
         DocumentEntity e = new DocumentEntity();
         e.setId(5L);
         e.setName("Doc");
@@ -122,10 +113,8 @@ class DocumentServiceTest {
 
         when(documentRepository.findById(5L)).thenReturn(Optional.of(e));
 
-        // when
         documentService.deleteDocument(5L);
 
-        // then
         InOrder inOrder = inOrder(minioService, documentRepository);
         inOrder.verify(minioService).deleteFile("key-5");
         inOrder.verify(documentRepository).deleteById(5L);
@@ -143,7 +132,6 @@ class DocumentServiceTest {
 
     @Test
     void getAllDocuments_returnsRepositoryResult() {
-        // given
         DocumentEntity a = new DocumentEntity();
         a.setId(1L);
         DocumentEntity b = new DocumentEntity();
@@ -151,10 +139,8 @@ class DocumentServiceTest {
 
         when(documentRepository.findAll()).thenReturn(List.of(a, b));
 
-        // when
         List<DocumentEntity> out = documentService.getAllDocuments();
 
-        // then
         assertEquals(2, out.size());
         assertEquals(1L, out.get(0).getId());
         assertEquals(2L, out.get(1).getId());
@@ -163,7 +149,6 @@ class DocumentServiceTest {
 
     @Test
     void searchByOcrText_usesElastic_thenLoadsEntitiesByIds() {
-        // given
         ElasticSearch s1 = new ElasticSearch();
         s1.setId(10L);
         ElasticSearch s2 = new ElasticSearch();
@@ -180,10 +165,8 @@ class DocumentServiceTest {
         when(documentRepository.findAllById(List.of(10L, 11L)))
                 .thenReturn(List.of(d1, d2));
 
-        // when
         List<DocumentEntity> out = documentService.searchByOcrText("hello");
 
-        // then
         assertEquals(2, out.size());
         verify(elasticSearchRepository).findByOcrTextContaining("hello");
         verify(documentRepository).findAllById(List.of(10L, 11L));

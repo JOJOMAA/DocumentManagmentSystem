@@ -30,7 +30,6 @@ class DocumentControllerTest {
 
     @Test
     void uploadPdf_acceptsMultipart_returnsDto_andCallsServiceAndMapper() throws Exception {
-        // given
         MockMultipartFile file = new MockMultipartFile(
                 "file", "invoice.pdf", "application/pdf", "PDF".getBytes()
         );
@@ -48,7 +47,6 @@ class DocumentControllerTest {
         when(documentService.savePdf(eq("Invoice"), any())).thenReturn(saved);
         when(mapper.toDto(saved)).thenReturn(dto);
 
-        // when/then
         mvc.perform(multipart("/documents/upload")
                         .file(file)
                         .param("name", "Invoice"))
@@ -86,7 +84,6 @@ class DocumentControllerTest {
 
     @Test
     void getMeta_returns200_withDto() throws Exception {
-        // given
         DocumentEntity doc = new DocumentEntity();
         doc.setId(7L);
         doc.setName("Doc");
@@ -100,7 +97,6 @@ class DocumentControllerTest {
         when(documentService.getById(7L)).thenReturn(doc);
         when(mapper.toDto(doc)).thenReturn(dto);
 
-        // when/then
         mvc.perform(get("/documents/7"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

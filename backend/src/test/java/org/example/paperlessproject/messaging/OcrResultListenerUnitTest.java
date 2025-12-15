@@ -28,13 +28,11 @@ class OcrResultListenerUnitTest {
 
     @BeforeEach
     void setup() {
-        // damit queue nicht null ist
         ReflectionTestUtils.setField(listener, "genAiRequestQueue", "genai.queue");
     }
 
     @Test
     void onOcrResult_savesTextToElastic_whenDocumentExists() {
-        // given
         Long docId = 10L;
 
         DocumentEntity doc = new DocumentEntity();
@@ -45,10 +43,8 @@ class OcrResultListenerUnitTest {
 
         DocumentOcrResult msg = new DocumentOcrResult(docId, "OCR TEXT");
 
-        // when
         listener.onOcrResult(msg);
 
-        // then
         verify(documentRepository).findById(docId);
         verify(elasticSearchRepository).save(argThat(es ->
                 docId.equals(es.getId()) &&
@@ -60,27 +56,22 @@ class OcrResultListenerUnitTest {
 
     @Test
     void onOcrResult_doesNotIndex_whenDocumentNotFound_butStillSendsGenAiIfTextPresent() {
-        // given
         Long docId = 99L;
         when(documentRepository.findById(docId)).thenReturn(Optional.empty());
 
         DocumentOcrResult msg = new DocumentOcrResult(docId, "TEXT");
 
-        // when
         listener.onOcrResult(msg);
 
-        // then
         verify(documentRepository).findById(docId);
         verifyNoInteractions(elasticSearchRepository);
 
-        // wichtig: dein Code sendet trotzdem GenAI wenn text != blank
         verify(amqpTemplate).convertAndSend(eq("genai.queue"), anyMap());
 
     }
 
     @Test
     void onOcrResult_whenTextIsNull_doesNotSendGenAi_andStillIndexesCurrentImplementation() {
-        // given
         Long docId = 1L;
 
         DocumentEntity doc = new DocumentEntity();
@@ -90,7 +81,6 @@ class OcrResultListenerUnitTest {
 
         DocumentOcrResult msg = new DocumentOcrResult(docId, null);
 
-        // when
         listener.onOcrResult(msg);
 
         verify(elasticSearchRepository).save(any());
