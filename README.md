@@ -1,6 +1,6 @@
 # Paperless Document Management System
 
-Ein modernes Dokumentenmanagementsystem (DMS), das auf einer Microservices-Architektur basiert. Das System ermöglicht das Hochladen, Speichern, Durchsuchen und Analysieren von PDF-Dokumenten mithilfe von OCR (Optical Character Recognition) und Generativer KI (Google Gemini).
+Ein Dokumentenmanagementsystem, das auf einer Microservices-Architektur basiert. Das System ermöglicht das Hochladen, Speichern, Durchsuchen und Analysieren von PDF-Dokumenten mithilfe von OCR (Optical Character Recognition) und Generativer KI (Google Gemini).
 
 ## Features
 
@@ -66,3 +66,24 @@ Das System folgt einem ereignisgesteuerten Ansatz:
 4.  **OCR-Worker** liest Nachricht, holt PDF, extrahiert Text und speichert ihn in ElasticSearch.
 5.  Nach OCR wird eine Nachricht an die `GENAI_REQUEST_QUEUE` gesendet.
 6.  **GenAI-Worker** generiert eine Zusammenfassung und speichert das Ergebnis.
+
+## API Endpoints
+
+Das Backend stellt eine RESTful API zur Verfügung, um Dokumente zu verwalten. Die Basis-URL ist `http://localhost:8081`.
+
+### Dokumenten-Management
+
+| Methode | Endpunkt | Beschreibung | Parameter / Body |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/documents/upload` | Lädt ein neues PDF-Dokument hoch. Startet asynchron OCR und KI-Summary. | `multipart/form-data`<br>- `file`: Die PDF-Datei<br>- `name`: Anzeigename |
+| **GET** | `/documents/list` | Ruft eine Liste aller gespeicherten Dokumente (Metadaten) ab. | - |
+| **GET** | `/documents/{id}` | Ruft die Metadaten eines spezifischen Dokuments ab. | Path Variable: `id` (Long) |
+| **GET** | `/documents/download/{id}` | Lädt die originale PDF-Datei herunter. | Path Variable: `id` (Long) |
+| **DELETE** | `/documents/{id}` | Löscht ein Dokument inkl. Datei (MinIO) und Metadaten. | Path Variable: `id` (Long) |
+
+### Suche & Inhalte
+
+| Methode | Endpunkt | Beschreibung | Parameter |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/documents/search` | Durchsucht den OCR-Text aller Dokumente (via ElasticSearch). | Query Param: `q` (Suchbegriff)<br>_Bsp: `/documents/search?q=rechnung`_ |
+| **GET** | `/documents/{id}/text` | Gibt den rohen, mittels OCR extrahierten Text eines Dokuments zurück. | Path Variable: `id` (Long) |
